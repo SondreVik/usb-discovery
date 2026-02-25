@@ -30,6 +30,22 @@ function DeviceCard({ device }: { device: USBDevice, index: number }) {
 function App() {
   const [devices, setDevices] = useState<USBDevice[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    // Check localStorage or system preference
+    if (localStorage.getItem('theme') === 'dark') return 'dark';
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    return 'light';
+  });
+
+  useEffect(() => {
+    // Apply theme to document
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   useEffect(() => {
     // Check if WebUSB is supported
@@ -96,9 +112,14 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <h1>WebUSB Descriptor Viewer</h1>
-        <button className="connect-btn" onClick={requestDevice}>
-          + Connect New Device
-        </button>
+        <div className="header-actions">
+          <button className="theme-toggle" onClick={toggleTheme}>
+            {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
+          </button>
+          <button className="connect-btn" onClick={requestDevice}>
+            + Connect New Device
+          </button>
+        </div>
       </header>
 
       {error && <div className="error-banner">{error}</div>}

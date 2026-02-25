@@ -34,6 +34,11 @@
 - [x] Update `src/App.css` to remove `max-width` constraint from `.app-container`.
 - [x] Ensure grid scales with viewport width using `auto-fill`.
 
-## 7. Verification
+## 7. Theming
+- [x] Implement CSS variables for colors.
+- [x] Create Dark Mode theme override.
+- [x] Add theme toggle switch and persistence logic.
+
+## 8. Verification
 - [x] Run TypeScript compiler (`tsc`) to ensure type safety.
 - [x] Run Vite build (`npm run build`) to ensure production build succeeds.
