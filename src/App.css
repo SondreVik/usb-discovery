@@ -5,8 +5,19 @@
   --bg-color: #f8f9fa;
   --text-color: #333;
   --card-bg: #fff;
-  --border-radius: 8px;
-  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --border-radius: 4px;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --font-mono: "Consolas", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
+  
+  --color-device: #e3f2fd;
+  --color-config: #fff3e0;
+  --color-interface: #e8f5e9;
+  --color-endpoint: #f3e5f5;
+  
+  --border-device: #90caf9;
+  --border-config: #ffcc80;
+  --border-interface: #a5d6a7;
+  --border-endpoint: #ce93d8;
 }
 
 body {
@@ -18,7 +29,7 @@ body {
 }
 
 .app-container {
-  max-width: 1200px;
+  max-width: 1400px; /* Increased for grid layout */
   margin: 0 auto;
   padding: 20px;
 }
@@ -28,6 +39,8 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ddd;
 }
 
 .app-header h1 {
@@ -59,118 +72,169 @@ body {
   text-align: center;
 }
 
-.device-grid {
+.device-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 20px;
+  align-items: start; /* Ensures cards don't stretch to max height */
 }
 
-.device-card {
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-  padding: 20px;
-  transition: transform 0.2s;
+.device-card-wrapper {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    overflow: hidden; /* Contains floated children if any */
+    transition: all 0.2s ease;
 }
 
-.device-card:hover {
-  transform: translateY(-5px);
+.device-card-wrapper:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.device-header {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 15px;
+.device-summary {
+    background-color: #f1f3f5;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid transparent;
 }
 
-.device-header h2 {
-  margin: 0 0 5px 0;
-  font-size: 18px;
+.device-card-wrapper:has(.device-details-content) .device-summary {
+    border-bottom: 1px solid #ddd;
 }
 
-.device-id {
-  font-size: 14px;
-  color: var(--secondary-color);
-  display: flex;
-  gap: 15px;
+.summary-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.device-body {
-  font-size: 14px;
+.summary-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
-.info-group {
-  margin-bottom: 15px;
+.vid-pid {
+    font-size: 0.85rem;
+    color: #666;
+    font-family: var(--font-mono);
+    white-space: nowrap;
 }
 
-.info-group h3 {
-  font-size: 16px;
-  margin-bottom: 8px;
-  color: #555;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 5px;
+.device-details-content {
+    padding: 15px;
 }
 
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
+/* Descriptor Blocks */
+.descriptor-block {
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 13px; /* Slightly smaller for dense info */
+    overflow: hidden;
 }
 
-.info-row .label {
-  font-weight: 500;
-  color: #666;
+.descriptor-header {
+    font-weight: bold;
+    font-size: 0.9em;
+    padding: 8px 10px;
+    background-color: rgba(0,0,0,0.03);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
 }
 
-.info-row .value {
-  color: #333;
+.collapsible-header {
+    cursor: pointer;
 }
 
-/* Configurations and Interfaces */
-.configurations {
-  border-top: 1px solid #eee;
-  padding-top: 10px;
+.collapsible-header:hover {
+    background-color: rgba(0,0,0,0.06);
 }
 
-.config-info {
-  margin-bottom: 10px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
+.toggle-icon {
+    font-size: 0.8em;
+    display: inline-block;
+    width: 15px;
+    text-align: center;
 }
 
-.config-info h4 {
-  margin: 0 0 5px 0;
-  font-size: 15px;
+.descriptor-content {
+    padding: 10px;
 }
 
-.interface-info {
-  margin-left: 10px;
-  margin-top: 5px;
-  border-left: 2px solid #ddd;
-  padding-left: 10px;
+/* Colors for hierarchy */
+.device-descriptor {
+    background-color: var(--color-device);
+    border-color: var(--border-device);
 }
 
-.interface-info h5 {
-  margin: 0 0 5px 0;
-  font-size: 14px;
+.config-descriptor {
+    background-color: var(--color-config);
+    border-color: var(--border-config);
+    /* margin-left: 10px; Remove indentation for better card fit */
 }
 
-.alternate-info {
-  margin-left: 10px;
-  font-size: 13px;
-  color: #555;
+.interface-descriptor {
+    background-color: var(--color-interface);
+    border-color: var(--border-interface);
+    /* margin-left: 10px; Remove indentation for better card fit */
 }
 
-.endpoint-info {
-  margin-left: 10px;
-  font-size: 12px;
-  color: #777;
+.endpoint-descriptor {
+    background-color: var(--color-endpoint);
+    border-color: var(--border-endpoint);
+    /* margin-left: 10px; Remove indentation for better card fit */
+}
+
+/* Fields */
+.descriptor-field {
+    display: flex;
+    margin-bottom: 4px;
+    padding: 2px 0;
+    border-bottom: 1px dotted rgba(0,0,0,0.05);
+}
+
+.descriptor-field:last-child {
+    border-bottom: none;
+}
+
+.field-name {
+    width: 180px;
+    color: #444;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.field-value {
+    color: #000;
+    font-weight: normal;
+    word-break: break-all;
+}
+
+.field-comment {
+    color: #777;
+    font-style: italic;
+    margin-left: 10px;
+}
+
+.nested-descriptors {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .empty-state {
-  grid-column: 1 / -1;
   text-align: center;
   padding: 50px;
   color: #888;
+  grid-column: 1 / -1;
 }

@@ -1,33 +1,26 @@
-# WebUSB Discovery Application Plan
+# Collapsible Descriptors & Grid Layout Plan
 
-## 1. Project Initialization & Dependencies
-- [x] Analyze existing Vite + React + TypeScript setup.
-- [x] Install `@types/w3c-web-usb` for WebUSB TypeScript definitions.
+## 1. Refactor Components (src/DescriptorComponents.tsx)
+-   Update `ConfigurationDescriptor` and `InterfaceDescriptor` to be collapsible.
+-   Add local state (`isExpanded`) to manage visibility of fields and nested descriptors.
+-   Add a clickable header with a toggle indicator (e.g., `[+]` / `[-]`).
+-   Default state: Expanded.
 
-## 2. Core Application Logic (src/App.tsx)
-- [x] Initialize state for `devices` (list of `USBDevice`).
-- [x] Implement `useEffect` hook:
-    - Check browser support for `navigator.usb`.
-    - Fetch initially connected devices using `getDevices()`.
-    - Add event listeners for `connect` and `disconnect` events.
-- [x] Implement `requestDevice` function:
-    - Call `navigator.usb.requestDevice({ filters: [] })` to prompt user.
-    - Update device list upon successful permission grant.
-- [x] Implement Render Logic:
-    - Render a "Connect Device" button.
-    - Render a list/grid of device cards.
-    - Display detailed information:
-        - Vendor/Product IDs.
-        - Manufacturer/Serial Number.
-        - USB/Device Versions.
-        - Device Class/Subclass/Protocol.
-        - Hierarchical view of Configurations -> Interfaces -> Alternates -> Endpoints.
+## 2. Refactor App Logic (src/App.tsx)
+-   **Grid Layout**: Change the container for devices to a responsive grid.
+-   **Collapsible Device Cards**:
+    -   Move the "card" logic into a new `DeviceCard` component (internal or external).
+    -   Implement state `isExpanded` for the card itself.
+    -   When collapsed, show only the `device-summary` (Product Name, VID/PID).
+    -   When expanded, show the summary + `DeviceDescriptor`.
 
 ## 3. Styling (src/App.css)
-- [x] Create a responsive grid layout for device cards.
-- [x] Style the header and connect button.
-- [x] Use a clean, hierarchical design for technical USB details (nested indentation for interfaces/endpoints).
+-   **Grid**: Update `.device-list` to use CSS Grid (e.g., `grid-template-columns: repeat(auto-fill, minmax(400px, 1fr))`).
+-   **Masonry/Alignment**: Use `align-items: start` to ensure cards don't stretch weirdly if heights differ.
+-   **Interactive Elements**: Add `cursor: pointer` and hover styles for headers.
+-   **Transitions**: Add basic transitions for expanding/collapsing content (optional, but good for UX).
 
 ## 4. Verification
-- [x] Run TypeScript compiler (`tsc`) to ensure type safety.
-- [x] Run Vite build (`npm run build`) to ensure production build succeeds.
+-   Verify clicking the device header toggles the full descriptor view.
+-   Verify clicking descriptor headers (Config, Interface) toggles their content.
+-   Verify the layout adapts to screen width (responsive grid).

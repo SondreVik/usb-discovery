@@ -1,0 +1,126 @@
+import React, { useState } from 'react';
+
+// Helper to format numbers as hex
+const toHex = (num: number, padding: number = 2) => `0x${num.toString(16).toUpperCase().padStart(padding, '0')}`;
+
+// Helper to format BCD version
+const toBCD = (major: number, minor: number, sub: number) => 
+  `${major}.${minor}.${sub}`;
+
+const Field = ({ name, value, comment }: { name: string, value: string | number | React.ReactNode, comment?: string }) => (
+  <div className="descriptor-field">
+    <span className="field-name">{name}</span>
+    <span className="field-value">{value}</span>
+    {comment && <span className="field-comment">; {comment}</span>}
+  </div>
+);
+
+// Collapsible Wrapper Component
+const CollapsibleDescriptor = ({ title, children, defaultOpen = true, className = "" }: { title: string, children: React.ReactNode, defaultOpen?: boolean, className?: string }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div className={`descriptor-block ${className}`}>
+      <div 
+        className="descriptor-header collapsible-header" 
+        onClick={() => setIsOpen(!isOpen)}
+        title="Click to toggle"
+      >
+        <span className="toggle-icon">{isOpen ? '▼' : '▶'}</span> {title}
+      </div>
+      {isOpen && <div className="descriptor-content">{children}</div>}
+    </div>
+  );
+};
+
+export const EndpointDescriptor = ({ endpoint }: { endpoint: USBEndpoint }) => {
+  const directionBit = endpoint.direction === 'in' ? 0x80 : 0x00;
+  const address = toHex(endpoint.endpointNumber | directionBit);
+  
+  // Endpoints are small, keeping them non-collapsible for now but wrapped in the block style
+  return (
+    <div className="descriptor-block endpoint-descriptor">
+      <div className="descriptor-header">ENDPOINT DESCRIPTOR</div>
+      <Field name="bLength" value="7" />
+      <Field name="bDescriptorType" value="0x05" comment="ENDPOINT" />
+      <Field name="bEndpointAddress" value={address} comment={`EP ${endpoint.endpointNumber} ${endpoint.direction.toUpperCase()}`} />
+      <Field name="bmAttributes" value={endpoint.type} />
+      <Field name="wMaxPacketSize" value={endpoint.packetSize} />
+      <Field name="bInterval" value="-" comment="(Not available in WebUSB)" />
+    </div>
+  );
+};
+
+export const InterfaceDescriptor = ({ iface, alternate }: { iface: USBInterface, alternate: USBAlternateInterface }) => {
+  return (
+    <CollapsibleDescriptor title={`INTERFACE DESCRIPTOR (${iface.interfaceNumber})`} className="interface-descriptor">
+      <Field name="bLength" value="9" />
+      <Field name="bDescriptorType" value="0x04" comment="INTERFACE" />
+      <Field name="bInterfaceNumber" value={iface.interfaceNumber} />
+      <Field name="bAlternateSetting" value={alternate.alternateSetting} />
+      <Field name="bNumEndpoints" value={alternate.endpoints.length} />
+      <Field name="bInterfaceClass" value={toHex(alternate.interfaceClass)} />
+      <Field name="bInterfaceSubClass" value={toHex(alternate.interfaceSubclass)} />
+      <Field name="bInterfaceProtocol" value={toHex(alternate.interfaceProtocol)} />
+      <Field name="iInterface" value={alternate.interfaceName || "N/A"} />
+      
+      <div className="nested-descriptors">
+        {alternate.endpoints.map((ep, idx) => (
+          <EndpointDescriptor key={idx} endpoint={ep} />
+        ))}
+      </div>
+    </CollapsibleDescriptor>
+  );
+};
+
+export const ConfigurationDescriptor = ({ config }: { config: USBConfiguration }) => {
+  return (
+    <CollapsibleDescriptor title={`CONFIGURATION DESCRIPTOR (${config.configurationValue})`} className="config-descriptor">
+      <Field name="bLength" value="9" />
+      <Field name="bDescriptorType" value="0x02" comment="CONFIGURATION" />
+      <Field name="wTotalLength" value="-" comment="(Calculated by Host)" />
+      <Field name="bNumInterfaces" value={config.interfaces.length} />
+      <Field name="bConfigurationValue" value={config.configurationValue} />
+      <Field name="iConfiguration" value={config.configurationName || "N/A"} />
+      <Field name="bmAttributes" value="-" comment="(Not exposed by WebUSB)" />
+      <Field name="bMaxPower" value="-" comment="(Not exposed by WebUSB)" />
+
+      <div className="nested-descriptors">
+        {config.interfaces.map(iface => (
+          <div key={iface.interfaceNumber}>
+            {iface.alternates.map((alt, idx) => (
+               <InterfaceDescriptor key={`${iface.interfaceNumber}-${idx}`} iface={iface} alternate={alt} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </CollapsibleDescriptor>
+  );
+};
+
+export const DeviceDescriptor = ({ device }: { device: USBDevice }) => {
+  return (
+    <CollapsibleDescriptor title="DEVICE DESCRIPTOR" className="device-descriptor">
+      <Field name="bLength" value="18" />
+      <Field name="bDescriptorType" value="0x01" comment="DEVICE" />
+      <Field name="bcdUSB" value={toBCD(device.usbVersionMajor, device.usbVersionMinor, device.usbVersionSubminor)} />
+      <Field name="bDeviceClass" value={toHex(device.deviceClass)} />
+      <Field name="bDeviceSubClass" value={toHex(device.deviceSubclass)} />
+      <Field name="bDeviceProtocol" value={toHex(device.deviceProtocol)} />
+      <Field name="bMaxPacketSize0" value="-" comment="(Not exposed by WebUSB)" />
+      <Field name="idVendor" value={toHex(device.vendorId, 4)} />
+      <Field name="idProduct" value={toHex(device.productId, 4)} />
+      <Field name="bcdDevice" value={toBCD(device.deviceVersionMajor, device.deviceVersionMinor, device.deviceVersionSubminor)} />
+      <Field name="iManufacturer" value={device.manufacturerName || "N/A"} />
+      <Field name="iProduct" value={device.productName || "N/A"} />
+      <Field name="iSerialNumber" value={device.serialNumber || "N/A"} />
+      <Field name="bNumConfigurations" value={device.configurations.length} />
+
+      <div className="nested-descriptors">
+        {device.configurations.map(config => (
+          <ConfigurationDescriptor key={config.configurationValue} config={config} />
+        ))}
+      </div>
+    </CollapsibleDescriptor>
+  );
+};
