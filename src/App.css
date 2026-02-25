@@ -29,9 +29,10 @@ body {
 }
 
 .app-container {
-  max-width: 1400px; /* Increased for grid layout */
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .app-header {
@@ -74,9 +75,9 @@ body {
 
 .device-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
-  align-items: start; /* Ensures cards don't stretch to max height */
+  align-items: start;
 }
 
 .device-card-wrapper {

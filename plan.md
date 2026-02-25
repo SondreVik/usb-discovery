@@ -23,12 +23,16 @@
 
 ## 5. Collapsible UI & Grid Layout
 - [x] Refactor `DescriptorComponents.tsx` to include a `CollapsibleDescriptor` wrapper.
-- [x] Make `ConfigurationDescriptor` and `InterfaceDescriptor` collapsible and **collapsed by default** to reduce scrolling.
+- [x] Make `ConfigurationDescriptor` and `InterfaceDescriptor` collapsible and **collapsed by default**.
 - [x] Refactor `App.tsx` to use a `DeviceCard` component.
-- [x] Set `DeviceCard` to be **expanded by default** so primary device info is immediately visible.
+- [x] Set `DeviceCard` to be **expanded by default**.
 - [x] Update `App.css` to use CSS Grid for the device list.
 - [x] Style collapsible headers and card wrappers.
 
-## 6. Verification
+## 6. Dynamic Grid Update
+- [x] Update `src/App.css` to remove `max-width` constraint from `.app-container`.
+- [x] Ensure grid scales with viewport width using `auto-fill`.
+
+## 7. Verification
 - [x] Run TypeScript compiler (`tsc`) to ensure type safety.
 - [x] Run Vite build (`npm run build`) to ensure production build succeeds.
