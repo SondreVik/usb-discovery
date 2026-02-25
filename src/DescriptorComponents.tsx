@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import usbClassesData from './usb-classes.json';
 
 // Helper to format numbers as hex
 const toHex = (num: number, padding: number = 2) => `0x${num.toString(16).toUpperCase().padStart(padding, '0')}`;
@@ -6,6 +7,35 @@ const toHex = (num: number, padding: number = 2) => `0x${num.toString(16).toUppe
 // Helper to format BCD version
 const toBCD = (major: number, minor: number, sub: number) => 
   `${major}.${minor}.${sub}`;
+
+// Helper to lookup USB Class/Subclass/Protocol
+const lookupUSBClass = (classId: number, subclassId?: number, protocolId?: number): string => {
+  const hexClass = toHex(classId, 2).replace('0x', '') + 'h';
+  const classObj = usbClassesData.usb_class_codes.find(c => c.base_class_id === hexClass);
+
+  if (!classObj) return toHex(classId);
+
+  let result = `${toHex(classId)} (${classObj.base_class_name})`;
+
+  if (subclassId !== undefined) {
+    const hexSubclass = toHex(subclassId, 2).replace('0x', '') + 'h';
+    const subclassObj = classObj.subclasses.find(s => s.subclass_id === hexSubclass);
+    
+    if (subclassObj) {
+        result += `, ${toHex(subclassId)} (${subclassObj.subclass_name})`;
+        
+        if (protocolId !== undefined && subclassObj.protocols) {
+            // Check protocols if available in JSON (current JSON structure has empty protocols array mostly)
+             // Simple fallback or lookup if protocols were populated
+        }
+    } else {
+        result += `, ${toHex(subclassId)}`;
+    }
+  }
+
+  return result;
+};
+
 
 const Field = ({ name, value, comment }: { name: string, value: string | number | React.ReactNode, comment?: string }) => (
   <div className="descriptor-field">
@@ -63,8 +93,8 @@ export const InterfaceDescriptor = ({ iface, alternate }: { iface: USBInterface,
       <Field name="bInterfaceNumber" value={iface.interfaceNumber} />
       <Field name="bAlternateSetting" value={alternate.alternateSetting} />
       <Field name="bNumEndpoints" value={alternate.endpoints.length} />
-      <Field name="bInterfaceClass" value={toHex(alternate.interfaceClass)} />
-      <Field name="bInterfaceSubClass" value={toHex(alternate.interfaceSubclass)} />
+      <Field name="bInterfaceClass" value={lookupUSBClass(alternate.interfaceClass)} />
+      <Field name="bInterfaceSubClass" value={lookupUSBClass(alternate.interfaceClass, alternate.interfaceSubclass).split(', ')[1] || toHex(alternate.interfaceSubclass)} />
       <Field name="bInterfaceProtocol" value={toHex(alternate.interfaceProtocol)} />
       <Field name="iInterface" value={alternate.interfaceName || "N/A"} />
       
@@ -116,8 +146,8 @@ export const DeviceDescriptor = ({ device }: { device: USBDevice }) => {
       <Field name="bLength" value="18" />
       <Field name="bDescriptorType" value="0x01" comment="DEVICE" />
       <Field name="bcdUSB" value={toBCD(device.usbVersionMajor, device.usbVersionMinor, device.usbVersionSubminor)} />
-      <Field name="bDeviceClass" value={toHex(device.deviceClass)} />
-      <Field name="bDeviceSubClass" value={toHex(device.deviceSubclass)} />
+      <Field name="bDeviceClass" value={lookupUSBClass(device.deviceClass)} />
+      <Field name="bDeviceSubClass" value={lookupUSBClass(device.deviceClass, device.deviceSubclass).split(', ')[1] || toHex(device.deviceSubclass)} />
       <Field name="bDeviceProtocol" value={toHex(device.deviceProtocol)} />
       <Field name="bMaxPacketSize0" value="-" comment="(Not exposed by WebUSB)" />
       <Field name="idVendor" value={toHex(device.vendorId, 4)} />

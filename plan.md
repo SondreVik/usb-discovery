@@ -16,6 +16,7 @@
 - [x] Create `EndpointDescriptor` component mimicking Table 9-13.
 - [x] Implement technical field mapping (e.g., `idVendor`, `bDeviceClass`).
 - [x] Implement hex and BCD formatting helpers.
+- [x] Integrate `usb-classes.json` for human-readable Class/Subclass names.
 
 ## 4. Integration & Styling
 - [x] Update `src/App.tsx` to use the new descriptor components.

@@ -1,0 +1,278 @@
+{
+  "usb_class_codes": [
+    {
+      "base_class_id": "01h",
+      "base_class_name": "Audio",
+      "descriptor_usage": "Interface",
+      "description": "Audio device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "02h",
+      "base_class_name": "Communications and CDC Control",
+      "descriptor_usage": "Both",
+      "description": "Communication device class",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "03h",
+      "base_class_name": "HID (Human Interface Device)",
+      "descriptor_usage": "Interface",
+      "description": "Human Interface Device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "05h",
+      "base_class_name": "Physical",
+      "descriptor_usage": "Interface",
+      "description": "Physical device class",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "06h",
+      "base_class_name": "Image",
+      "descriptor_usage": "Interface",
+      "description": "Still Imaging device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "07h",
+      "base_class_name": "Printer",
+      "descriptor_usage": "Interface",
+      "description": "Printer device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "08h",
+      "base_class_name": "Mass Storage",
+      "descriptor_usage": "Interface",
+      "description": "Mass Storage device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "09h",
+      "base_class_name": "Hub",
+      "descriptor_usage": "Device",
+      "description": "USB Hub",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "0Ah",
+      "base_class_name": "CDC-Data",
+      "descriptor_usage": "Interface",
+      "description": "CDC data device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "0Bh",
+      "base_class_name": "Smart Card",
+      "descriptor_usage": "Interface",
+      "description": "Smart Card device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "0Dh",
+      "base_class_name": "Content Security",
+      "descriptor_usage": "Interface",
+      "description": "Content Security device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "0Eh",
+      "base_class_name": "Video",
+      "descriptor_usage": "Interface",
+      "description": "Video device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "0Fh",
+      "base_class_name": "Personal Healthcare",
+      "descriptor_usage": "Interface",
+      "description": "Personal Healthcare device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "10h",
+      "base_class_name": "Audio/Video Devices",
+      "descriptor_usage": "Interface",
+      "description": "Audio/Video Device",
+      "subclasses": [
+        {
+          "subclass_id": "02h",
+          "subclass_name": "AVData Video Streaming Interface",
+          "protocols": []
+        },
+        {
+          "subclass_id": "03h",
+          "subclass_name": "AVData Audio Streaming Interface",
+          "protocols": []
+        }
+      ]
+    },
+    {
+      "base_class_id": "11h",
+      "base_class_name": "Billboard Device Class",
+      "descriptor_usage": "Device",
+      "description": "Billboard Device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "12h",
+      "base_class_name": "USB Type-C Bridge Class",
+      "descriptor_usage": "Interface",
+      "description": "USB Type-C Bridge Device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "13h",
+      "base_class_name": "USB Bulk Display Protocol Device Class",
+      "descriptor_usage": "Interface",
+      "description": "USB BDP Device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "14h",
+      "base_class_name": "MCTP over USB Protocol Endpoint Device Class",
+      "descriptor_usage": "Interface",
+      "description": "MCTP over USB",
+      "subclasses": [
+        {
+          "subclass_id": "01h",
+          "subclass_name": "MCTP Host Interface endpoint",
+          "protocols": []
+        }
+      ]
+    },
+    {
+      "base_class_id": "3Ch",
+      "base_class_name": "I3C Device Class",
+      "descriptor_usage": "Interface",
+      "description": "I3C Device",
+      "subclasses": []
+    },
+    {
+      "base_class_id": "DCh",
+      "base_class_name": "Diagnostic Device",
+      "descriptor_usage": "Both",
+      "description": "Diagnostic Device",
+      "subclasses": [
+        {
+          "subclass_id": "02h",
+          "subclass_name": "Debug Target",
+          "protocols": []
+        },
+        {
+          "subclass_id": "03h",
+          "subclass_name": "Trace protocol on DbC",
+          "protocols": []
+        },
+        {
+          "subclass_id": "04h",
+          "subclass_name": "Dfx protocol on DbC",
+          "protocols": []
+        },
+        {
+          "subclass_id": "05h",
+          "subclass_name": "Trace/GNU over GP endpoint on DvC",
+          "protocols": []
+        },
+        {
+          "subclass_id": "06h",
+          "subclass_name": "Dfx protocol on DvC",
+          "protocols": []
+        },
+        {
+          "subclass_id": "07h",
+          "subclass_name": "Trace protocol on DvC",
+          "protocols": []
+        }
+      ]
+    },
+    {
+      "base_class_id": "E0h",
+      "base_class_name": "Wireless Controller",
+      "descriptor_usage": "Interface",
+      "description": "Wireless Controller",
+      "subclasses": [
+        {
+          "subclass_id": "02h",
+          "subclass_name": "Wire Adapters",
+          "protocols": []
+        }
+      ]
+    },
+    {
+      "base_class_id": "EFh",
+      "base_class_name": "Miscellaneous",
+      "descriptor_usage": "Both",
+      "description": "Miscellaneous devices",
+      "subclasses": [
+        {
+          "subclass_id": "02h",
+          "subclass_name": "Association and Wire Adapter Interfaces",
+          "protocols": []
+        },
+        {
+          "subclass_id": "03h",
+          "subclass_name": "Association Framework",
+          "protocols": []
+        },
+        {
+          "subclass_id": "04h",
+          "subclass_name": "Remote NDIS (RNDIS)",
+          "protocols": []
+        },
+        {
+          "subclass_id": "05h",
+          "subclass_name": "USB3 Vision",
+          "protocols": []
+        },
+        {
+          "subclass_id": "06h",
+          "subclass_name": "Stream Transport Efficient Protocol (STEP)",
+          "protocols": []
+        },
+        {
+          "subclass_id": "07h",
+          "subclass_name": "DVB Common Interface (DVB-CI)",
+          "protocols": []
+        },
+        {
+          "subclass_id": "08h",
+          "subclass_name": "OCP Secure Firmware Recovery",
+          "protocols": []
+        },
+        {
+          "subclass_id": "09h",
+          "subclass_name": "OCP OBMF-ICP",
+          "protocols": []
+        }
+      ]
+    },
+    {
+      "base_class_id": "FEh",
+      "base_class_name": "Application Specific",
+      "descriptor_usage": "Interface",
+      "description": "Application Specific",
+      "subclasses": [
+        {
+          "subclass_id": "02h",
+          "subclass_name": "IRDA Bridge",
+          "protocols": []
+        },
+        {
+          "subclass_id": "03h",
+          "subclass_name": "USB Test and Measurement Device",
+          "protocols": []
+        }
+      ]
+    },
+    {
+      "base_class_id": "FFh",
+      "base_class_name": "Vendor Specific",
+      "descriptor_usage": "Both",
+      "description": "Vendor specific",
+      "subclasses": []
+    }
+  ]
+}
