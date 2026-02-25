@@ -53,7 +53,11 @@ export const EndpointDescriptor = ({ endpoint }: { endpoint: USBEndpoint }) => {
 
 export const InterfaceDescriptor = ({ iface, alternate }: { iface: USBInterface, alternate: USBAlternateInterface }) => {
   return (
-    <CollapsibleDescriptor title={`INTERFACE DESCRIPTOR (${iface.interfaceNumber})`} className="interface-descriptor">
+    <CollapsibleDescriptor 
+      title={`INTERFACE DESCRIPTOR (${iface.interfaceNumber})`} 
+      className="interface-descriptor"
+      defaultOpen={false}
+    >
       <Field name="bLength" value="9" />
       <Field name="bDescriptorType" value="0x04" comment="INTERFACE" />
       <Field name="bInterfaceNumber" value={iface.interfaceNumber} />
@@ -75,7 +79,11 @@ export const InterfaceDescriptor = ({ iface, alternate }: { iface: USBInterface,
 
 export const ConfigurationDescriptor = ({ config }: { config: USBConfiguration }) => {
   return (
-    <CollapsibleDescriptor title={`CONFIGURATION DESCRIPTOR (${config.configurationValue})`} className="config-descriptor">
+    <CollapsibleDescriptor 
+      title={`CONFIGURATION DESCRIPTOR (${config.configurationValue})`} 
+      className="config-descriptor"
+      defaultOpen={false}
+    >
       <Field name="bLength" value="9" />
       <Field name="bDescriptorType" value="0x02" comment="CONFIGURATION" />
       <Field name="wTotalLength" value="-" comment="(Calculated by Host)" />
@@ -100,7 +108,11 @@ export const ConfigurationDescriptor = ({ config }: { config: USBConfiguration }
 
 export const DeviceDescriptor = ({ device }: { device: USBDevice }) => {
   return (
-    <CollapsibleDescriptor title="DEVICE DESCRIPTOR" className="device-descriptor">
+    <CollapsibleDescriptor 
+      title="DEVICE DESCRIPTOR" 
+      className="device-descriptor"
+      defaultOpen={true}
+    >
       <Field name="bLength" value="18" />
       <Field name="bDescriptorType" value="0x01" comment="DEVICE" />
       <Field name="bcdUSB" value={toBCD(device.usbVersionMajor, device.usbVersionMinor, device.usbVersionSubminor)} />

@@ -23,9 +23,10 @@
 
 ## 5. Collapsible UI & Grid Layout
 - [x] Refactor `DescriptorComponents.tsx` to include a `CollapsibleDescriptor` wrapper.
-- [x] Make `ConfigurationDescriptor` and `InterfaceDescriptor` collapsible.
-- [x] Refactor `App.tsx` to use a `DeviceCard` component with expanded/collapsed state.
-- [x] Update `App.css` to use CSS Grid for the device list (`grid-template-columns`).
+- [x] Make `ConfigurationDescriptor` and `InterfaceDescriptor` collapsible and **collapsed by default** to reduce scrolling.
+- [x] Refactor `App.tsx` to use a `DeviceCard` component.
+- [x] Set `DeviceCard` to be **expanded by default** so primary device info is immediately visible.
+- [x] Update `App.css` to use CSS Grid for the device list.
 - [x] Style collapsible headers and card wrappers.
 
 ## 6. Verification

@@ -3,7 +3,7 @@ import './App.css';
 import { DeviceDescriptor } from './DescriptorComponents';
 
 function DeviceCard({ device }: { device: USBDevice, index: number }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   return (
     <div className="device-card-wrapper">
