@@ -1,26 +1,33 @@
-# Collapsible Descriptors & Grid Layout Plan
+# WebUSB Discovery Application Plan
 
-## 1. Refactor Components (src/DescriptorComponents.tsx)
--   Update `ConfigurationDescriptor` and `InterfaceDescriptor` to be collapsible.
--   Add local state (`isExpanded`) to manage visibility of fields and nested descriptors.
--   Add a clickable header with a toggle indicator (e.g., `[+]` / `[-]`).
--   Default state: Expanded.
+## 1. Project Initialization & Dependencies
+- [x] Analyze existing Vite + React + TypeScript setup.
+- [x] Install `@types/w3c-web-usb` for WebUSB TypeScript definitions.
 
-## 2. Refactor App Logic (src/App.tsx)
--   **Grid Layout**: Change the container for devices to a responsive grid.
--   **Collapsible Device Cards**:
-    -   Move the "card" logic into a new `DeviceCard` component (internal or external).
-    -   Implement state `isExpanded` for the card itself.
-    -   When collapsed, show only the `device-summary` (Product Name, VID/PID).
-    -   When expanded, show the summary + `DeviceDescriptor`.
+## 2. Core Application Logic (src/App.tsx)
+- [x] Initialize state for `devices` (list of `USBDevice`).
+- [x] Implement `useEffect` hook for device enumeration and events.
+- [x] Implement `requestDevice` for user interaction.
 
-## 3. Styling (src/App.css)
--   **Grid**: Update `.device-list` to use CSS Grid (e.g., `grid-template-columns: repeat(auto-fill, minmax(400px, 1fr))`).
--   **Masonry/Alignment**: Use `align-items: start` to ensure cards don't stretch weirdly if heights differ.
--   **Interactive Elements**: Add `cursor: pointer` and hover styles for headers.
--   **Transitions**: Add basic transitions for expanding/collapsing content (optional, but good for UX).
+## 3. Descriptor-Focused UI Refactoring (src/DescriptorComponents.tsx)
+- [x] Create `DeviceDescriptor` component mimicking standard USB Table 9-8.
+- [x] Create `ConfigurationDescriptor` component mimicking Table 9-10.
+- [x] Create `InterfaceDescriptor` component mimicking Table 9-12.
+- [x] Create `EndpointDescriptor` component mimicking Table 9-13.
+- [x] Implement technical field mapping (e.g., `idVendor`, `bDeviceClass`).
+- [x] Implement hex and BCD formatting helpers.
 
-## 4. Verification
--   Verify clicking the device header toggles the full descriptor view.
--   Verify clicking descriptor headers (Config, Interface) toggles their content.
--   Verify the layout adapts to screen width (responsive grid).
+## 4. Integration & Styling
+- [x] Update `src/App.tsx` to use the new descriptor components.
+- [x] Update `src/App.css` for technical, hierarchical styling.
+
+## 5. Collapsible UI & Grid Layout
+- [x] Refactor `DescriptorComponents.tsx` to include a `CollapsibleDescriptor` wrapper.
+- [x] Make `ConfigurationDescriptor` and `InterfaceDescriptor` collapsible.
+- [x] Refactor `App.tsx` to use a `DeviceCard` component with expanded/collapsed state.
+- [x] Update `App.css` to use CSS Grid for the device list (`grid-template-columns`).
+- [x] Style collapsible headers and card wrappers.
+
+## 6. Verification
+- [x] Run TypeScript compiler (`tsc`) to ensure type safety.
+- [x] Run Vite build (`npm run build`) to ensure production build succeeds.
