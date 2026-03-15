@@ -69,17 +69,30 @@ export const EndpointDescriptor = ({ endpoint, device, usbInterface, interfaceCl
   const directionBit = endpoint.direction === 'in' ? 0x80 : 0x00;
   const address = toHex(endpoint.endpointNumber | directionBit);
   const [phase, setPhase] = useState<'idle' | 'collecting' | 'playing'>('idle');
+  const [error, setError] = useState<string | null>(null);
 
   const showPlayButton = endpoint.type === 'isochronous' && endpoint.direction === 'in' && interfaceClass === 0x01;
 
   async function handlePlay() {
+    setError(null);
+    const audioCtx = new AudioContext({ sampleRate: 48_000 });
+    // Both initiated synchronously within the user-activation window (before any await):
+    //   device.open() requires transient user activation — initiating it here guarantees that.
+    //   requestDevice() shows the browser access prompt for explicit user confirmation.
+    const openPromise = device.opened ? Promise.resolve() : device.open();
+    // const devicePromise = navigator.usb.requestDevice({
+    //   filters: [{ vendorId: device.vendorId, productId: device.productId }],
+    // });
     setPhase('collecting');
     try {
+      await Promise.all([openPromise, /* devicePromise */]);
       const stream = await createUsbAudioStream(device, usbInterface, endpoint);
       setPhase('playing');
-      await playUsbAudioStream(stream);
+      await playUsbAudioStream(stream, audioCtx);
     } catch (err) {
       console.error('USB audio playback failed:', err);
+      setError(err instanceof Error ? err.message : String(err));
+      await audioCtx.close().catch(() => {});
     } finally {
       setPhase('idle');
     }
@@ -98,7 +111,10 @@ export const EndpointDescriptor = ({ endpoint, device, usbInterface, interfaceCl
       <Field name="wMaxPacketSize" value={endpoint.packetSize} />
       <Field name="bInterval" value="-" comment="(Not available in WebUSB)" />
       {showPlayButton && (
-        <button onClick={handlePlay} disabled={phase !== 'idle'}>{buttonLabel}</button>
+        <>
+          <button onClick={handlePlay} disabled={phase !== 'idle'}>{buttonLabel}</button>
+          {error && <span className="field-comment" style={{ color: 'var(--error-color, #ff5252)' }}>{error}</span>}
+        </>
       )}
     </div>
   );
