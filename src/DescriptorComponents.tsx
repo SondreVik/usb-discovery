@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import usbClassesData from './usb-classes.json';
+import { createUsbAudioStream } from './UsbAudioStream';
+import { playUsbAudioStream } from './UsbAudioPlayer';
 
 // Helper to format numbers as hex
 const toHex = (num: number, padding: number = 2) => `0x${num.toString(16).toUpperCase().padStart(padding, '0')}`;
@@ -63,10 +65,28 @@ const CollapsibleDescriptor = ({ title, children, defaultOpen = true, className 
   );
 };
 
-export const EndpointDescriptor = ({ endpoint }: { endpoint: USBEndpoint }) => {
+export const EndpointDescriptor = ({ endpoint, device, usbInterface, interfaceClass }: { endpoint: USBEndpoint; device: USBDevice; usbInterface: USBInterface; interfaceClass: number }) => {
   const directionBit = endpoint.direction === 'in' ? 0x80 : 0x00;
   const address = toHex(endpoint.endpointNumber | directionBit);
-  
+  const [phase, setPhase] = useState<'idle' | 'collecting' | 'playing'>('idle');
+
+  const showPlayButton = endpoint.type === 'isochronous' && endpoint.direction === 'in' && interfaceClass === 0x01;
+
+  async function handlePlay() {
+    setPhase('collecting');
+    try {
+      const stream = await createUsbAudioStream(device, usbInterface, endpoint);
+      setPhase('playing');
+      await playUsbAudioStream(stream);
+    } catch (err) {
+      console.error('USB audio playback failed:', err);
+    } finally {
+      setPhase('idle');
+    }
+  }
+
+  const buttonLabel = phase === 'collecting' ? 'Collecting…' : phase === 'playing' ? 'Playing…' : 'Play Audio (5s)';
+
   // Endpoints are small, keeping them non-collapsible for now but wrapped in the block style
   return (
     <div className="descriptor-block endpoint-descriptor">
@@ -77,14 +97,17 @@ export const EndpointDescriptor = ({ endpoint }: { endpoint: USBEndpoint }) => {
       <Field name="bmAttributes" value={endpoint.type} />
       <Field name="wMaxPacketSize" value={endpoint.packetSize} />
       <Field name="bInterval" value="-" comment="(Not available in WebUSB)" />
+      {showPlayButton && (
+        <button onClick={handlePlay} disabled={phase !== 'idle'}>{buttonLabel}</button>
+      )}
     </div>
   );
 };
 
-export const InterfaceDescriptor = ({ iface, alternate }: { iface: USBInterface, alternate: USBAlternateInterface }) => {
+export const InterfaceDescriptor = ({ iface, alternate, device }: { iface: USBInterface; alternate: USBAlternateInterface; device: USBDevice }) => {
   return (
-    <CollapsibleDescriptor 
-      title={`INTERFACE DESCRIPTOR (${iface.interfaceNumber})`} 
+    <CollapsibleDescriptor
+      title={`INTERFACE DESCRIPTOR (${iface.interfaceNumber})`}
       className="interface-descriptor"
       defaultOpen={false}
     >
@@ -97,20 +120,20 @@ export const InterfaceDescriptor = ({ iface, alternate }: { iface: USBInterface,
       <Field name="bInterfaceSubClass" value={lookupUSBClass(alternate.interfaceClass, alternate.interfaceSubclass).split(', ')[1] || toHex(alternate.interfaceSubclass)} />
       <Field name="bInterfaceProtocol" value={toHex(alternate.interfaceProtocol)} />
       <Field name="iInterface" value={alternate.interfaceName || "N/A"} />
-      
+
       <div className="nested-descriptors">
         {alternate.endpoints.map((ep, idx) => (
-          <EndpointDescriptor key={idx} endpoint={ep} />
+          <EndpointDescriptor key={idx} endpoint={ep} device={device} usbInterface={iface} interfaceClass={alternate.interfaceClass} />
         ))}
       </div>
     </CollapsibleDescriptor>
   );
 };
 
-export const ConfigurationDescriptor = ({ config }: { config: USBConfiguration }) => {
+export const ConfigurationDescriptor = ({ config, device }: { config: USBConfiguration; device: USBDevice }) => {
   return (
-    <CollapsibleDescriptor 
-      title={`CONFIGURATION DESCRIPTOR (${config.configurationValue})`} 
+    <CollapsibleDescriptor
+      title={`CONFIGURATION DESCRIPTOR (${config.configurationValue})`}
       className="config-descriptor"
       defaultOpen={false}
     >
@@ -127,7 +150,7 @@ export const ConfigurationDescriptor = ({ config }: { config: USBConfiguration }
         {config.interfaces.map(iface => (
           <div key={iface.interfaceNumber}>
             {iface.alternates.map((alt, idx) => (
-               <InterfaceDescriptor key={`${iface.interfaceNumber}-${idx}`} iface={iface} alternate={alt} />
+              <InterfaceDescriptor key={`${iface.interfaceNumber}-${idx}`} iface={iface} alternate={alt} device={device} />
             ))}
           </div>
         ))}
@@ -160,7 +183,7 @@ export const DeviceDescriptor = ({ device }: { device: USBDevice }) => {
 
       <div className="nested-descriptors">
         {device.configurations.map(config => (
-          <ConfigurationDescriptor key={config.configurationValue} config={config} />
+          <ConfigurationDescriptor key={config.configurationValue} config={config} device={device} />
         ))}
       </div>
     </CollapsibleDescriptor>
